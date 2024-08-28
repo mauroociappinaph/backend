@@ -3,7 +3,7 @@ GET http://localhost:4000/api/products
 Content-Type: application/json
 
 ### Obtener un producto específico por ID
-GET http://localhost:4000/api/products/1
+GET http://localhost:4000/api/products/4
 Content-Type: application/json
 
 ### Crear un nuevo producto
@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ### Actualizar un producto existente
-PATCH  http://localhost:4000/api/products/2
+PATCH  http://localhost:4000/api/products/3
 Content-Type: application/json
 
 {
@@ -28,5 +28,5 @@ Content-Type: application/json
 }
 
 ### Eliminar un producto
-DELETE http://localhost:4000/api/products/1
+DELETE http://localhost:4000/api/products/2
 Content-Type: application/json
