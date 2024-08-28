@@ -26,7 +26,6 @@ model Entrepreneurs {
   description    String?
   businessName   String    
   businessDescription String? 
-
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
