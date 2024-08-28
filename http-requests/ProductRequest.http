@@ -1,0 +1,31 @@
+### Obtener todos los productos
+GET http://localhost:4000/api/products
+Content-Type: application/json
+
+### Obtener un producto específico por ID
+GET http://localhost:4000/api/products/1
+Content-Type: application/json
+
+### Crear un nuevo producto
+POST http://localhost:4000/api/products
+Content-Type: application/json
+
+{
+    "name": "Nuevo Producto 2",
+    "description": "Descripción del producto",
+    "price": 29
+}
+
+### Actualizar un producto existente
+PUT http://localhost:4000/api/products/1
+Content-Type: application/json
+
+{
+    "name": "Producto Actualizado",
+    "description": "Nueva descripción",
+    "price": 39.99
+}
+
+### Eliminar un producto
+DELETE http://localhost:4000/api/products/1
+Content-Type: application/json
