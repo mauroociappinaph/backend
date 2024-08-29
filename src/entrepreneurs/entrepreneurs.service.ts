@@ -1,3 +1,4 @@
+import { CreateProductDTO } from './../products/dto/create-product.dto';
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
@@ -26,6 +27,8 @@ export class EntrepreneursService {
         }
       }
     }
+
+
   }
 
   findAll() {
