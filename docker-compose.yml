@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "4000:3000"
+    environment:
+      DATABASE_URL: "file:/app/prisma/dev.db"
+    command: ["npm", "run", "start:dev"]
