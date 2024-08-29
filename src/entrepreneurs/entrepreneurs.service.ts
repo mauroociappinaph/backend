@@ -19,7 +19,8 @@ export class EntrepreneursService {
 
   async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
     try {
-      return await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto });
+      const entrepreneur = await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto });
+      return entrepreneur;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -32,7 +33,7 @@ export class EntrepreneursService {
   }
 
   findAll() {
-    return `This action returns all entrepreneurs`;
+    return this.prismaService.entrepreneurs.findMany();
   }
 
   findOne(id: number) {

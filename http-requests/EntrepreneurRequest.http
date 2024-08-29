@@ -1,0 +1,21 @@
+### Obtener todos los emprendedores
+GET http://localhost:4000/api/entrepreneurs
+Content-Type: application/json
+
+### Obtener un emprendedor específico por ID
+GET http://localhost:4000/api/entrepreneurs/1
+Content-Type: application/json
+
+### Crear un nuevo emprendedor
+POST http://localhost:4000/api/entrepreneurs
+Content-Type: application/json
+
+{
+  "email": "n@correo.com",
+  "firstName": "New York Name",
+  "lastName": "New York Last",
+  "description": "Descripción del emprendedor",
+  "businessName": "Nombre del negocio",
+  "businessDescription": "Descripción del negocio",
+  "products": []
+}
