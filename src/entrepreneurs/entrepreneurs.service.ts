@@ -19,7 +19,7 @@ export class EntrepreneursService {
 
   async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
     try {
-      const entrepreneur = await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto });
+      const entrepreneur = await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto, include: { products: true } });
       return entrepreneur;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
