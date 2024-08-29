@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EntrepreneursService } from './entrepreneurs.service';
-import { CreateEntrepreneurDto } from './dto/create-entrepreneur.dto';
+import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -12,7 +12,7 @@ export class EntrepreneursController {
   @Post()
   @ApiOperation({ summary: 'Create a new entrepreneur' })
   @ApiResponse({ status: 201, description: 'The entrepreneur has been successfully created.' })
-  create(@Body() createEntrepreneurDto: CreateEntrepreneurDto) {
+  create(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
     return this.entrepreneursService.create(createEntrepreneurDto);
   }
 

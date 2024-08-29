@@ -1,11 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { CreateEntrepreneurDto } from './dto/create-entrepreneur.dto';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
+import { PrismaService } from '../prisma/prisma.service'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class EntrepreneursService {
-  create(createEntrepreneurDto: CreateEntrepreneurDto) {
-    return 'This action adds a new entrepreneur';
+
+
+
+  constructor(private prismaService: PrismaService) {
+
+
+  }
+
+
+
+  async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
+    try {
+      return await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException(`Entrepreneur with name ${createEntrepreneurDto.firstName} already exists`)
+        }
+      }
+    }
   }
 
   findAll() {
