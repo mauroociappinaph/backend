@@ -17,5 +17,11 @@ Content-Type: application/json
   "description": "Descripción del emprendedor",
   "businessName": "Nombre del negocio",
   "businessDescription": "Descripción del negocio",
-  "products": ["almendra"]  
+  "products": [
+    {
+      "name": "Nombre del Producto",
+      "description": "Descripción del producto",
+      "price": 99.99
+    }
+  ]  
 }

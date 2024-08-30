@@ -9,8 +9,6 @@ export class ProductsService {
 
 
   constructor(private prismaService: PrismaService) {
-
-
   }
 
   async create(createProductDto: CreateProductDTO) {
