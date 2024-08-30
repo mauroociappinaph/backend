@@ -9,14 +9,17 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
+  // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('API de Emprendedores')
+    .setDescription('Documentación de la API para gestionar emprendedores y productos.')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('entrepreneurs')
+    .addTag('products')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
   app.enableCors(CORS);
 
   app.useGlobalPipes(new ValidationPipe({
