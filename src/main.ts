@@ -5,11 +5,15 @@ import { ConfigService } from '@nestjs/config';
 import * as morgan from 'morgan';
 import { CORS } from './constant';
 import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  // Configuración de Swagger
+
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  //! Configuración de Swagger
   const config = new DocumentBuilder()
     .setTitle('API de Emprendedores')
     .setDescription('Documentación de la API para gestionar emprendedores y productos.')
