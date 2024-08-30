@@ -2,7 +2,27 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ProductsService } from './products.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+
+// Ejemplos de solicitudes y respuestas
+const exampleProduct = {
+  id: 1,
+  name: 'Producto 1',
+  description: 'Descripción del producto',
+  price: 99.99,
+  image: 'http://example.com/image.png',
+  createdAt: '2024-08-30T14:00:00Z',
+  updatedAt: '2024-08-30T14:00:00Z',
+};
+
+const exampleProductErrorResponse = {
+  message: [
+    'name must be a string',
+    'price must be a number',
+  ],
+  error: 'Bad Request',
+  statusCode: 400,
+};
 
 @ApiTags('products')
 @Controller('products')
@@ -11,7 +31,9 @@ export class ProductsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
-  @ApiResponse({ status: 201, description: 'The product has been successfully created.' })
+  @ApiResponse({ status: 201, description: 'The product has been successfully created.', schema: { example: exampleProduct } })
+  @ApiResponse({ status: 400, description: 'Invalid input, object invalid.', schema: { example: exampleProductErrorResponse } })
+  @ApiBody({ description: 'The data to create a product', schema: { example: exampleProduct } })
   create(@Body() createProductDto: CreateProductDTO) {
     return this.productsService.create(createProductDto);
   }
@@ -44,3 +66,4 @@ export class ProductsController {
     return this.productsService.remove(+id);
   }
 }
+

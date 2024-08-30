@@ -3,7 +3,7 @@ GET http://localhost:4000/api/products
 Content-Type: application/json
 
 ### Obtener un producto específico por ID
-GET http://localhost:4000/api/products/3
+GET http://localhost:4000/api/products/8
 Content-Type: application/json
 
 ### Crear un nuevo producto
@@ -11,22 +11,22 @@ POST http://localhost:4000/api/products
 Content-Type: application/json
 
 {
-    "name": "Nuevo Producto sss",
+    "name": "",
     "description": "Descripción del producto",
     "price": 90,
     "image":"https://media.istockphoto.com/id/513133900/es/foto/oro-retriever-sentado-en-frente-de-un-fondo-blanco.jpg?s=612x612&w=0&k=20&c=0lRWImB8Y4p6X6YGt06c6q8I3AqBgKD-OGQxjLCI5EY="
 }
 
 ### Actualizar un producto existente
-PATCH  http://localhost:4000/api/products/3
+PATCH  http://localhost:4000/api/products/8
 Content-Type: application/json
 
 {
-    "name": "Producto Actualizado",
+    "name": "Producto Actussssssssssssssssssalizado",
     "description": "Nueva descripción",
     "price": 39.99
 }
 
 ### Eliminar un producto
-DELETE http://localhost:4000/api/products/4
+DELETE http://localhost:4000/api/products/7
 Content-Type: application/json

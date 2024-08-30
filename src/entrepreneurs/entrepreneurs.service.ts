@@ -19,17 +19,24 @@ export class EntrepreneursService {
 
   async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
     try {
-      const entrepreneur = await this.prismaService.entrepreneurs.create({ data: createEntrepreneurDto, include: { products: true } });
+      const { products, ...entrepreneurData } = createEntrepreneurDto;
+      const entrepreneur = await this.prismaService.entrepreneurs.create({
+        data: {
+          ...entrepreneurData,
+          products: {
+            create: products,
+          },
+        },
+        include: { products: true },
+      });
       return entrepreneur;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          throw new ConflictException(`Entrepreneur with name ${createEntrepreneurDto.firstName} already exists`)
+          throw new ConflictException(`Entrepreneur with name ${createEntrepreneurDto.firstName} already exists`);
         }
       }
     }
-
-
   }
 
   findAll() {
