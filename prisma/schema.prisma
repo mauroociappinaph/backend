@@ -22,8 +22,7 @@ model Users {
 model Entrepreneurs {
   id                  Int       @id @default(autoincrement())
   email               String    @unique
-  //password            String    @bcrypt
-  //repeatedPassword    String    @bcrypt
+  password            String
   firstName           String
   lastName            String
   phoneNumber         String?

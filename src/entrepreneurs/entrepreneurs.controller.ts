@@ -3,6 +3,7 @@ import { EntrepreneursService } from './entrepreneurs.service';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { AuthService } from 'src/auth/auth.service';
 
 // Ejemplos de solicitudes y respuestas
 const exampleEntrepreneur = {
@@ -36,7 +37,22 @@ const exampleErrorResponse = {
 @ApiTags('entrepreneurs')
 @Controller('entrepreneurs')
 export class EntrepreneursController {
-  constructor(private readonly entrepreneursService: EntrepreneursService) { }
+  constructor(private readonly entrepreneursService: EntrepreneursService, private readonly authService: AuthService,) { }
+
+
+
+  @Post('signup')
+  @ApiOperation({ summary: 'Register a new entrepreneur' })
+  signup(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
+    return this.authService.signup(createEntrepreneurDto);
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login as an entrepreneur' })
+  login(@Body() loginCredentials: { email: string; password: string }) {
+    const { email, password } = loginCredentials;
+    return this.authService.login(email, password);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a new entrepreneur' })

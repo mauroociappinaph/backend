@@ -3,10 +3,60 @@ import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { JwtService, JwtModule } from '@nestjs/jwt';
 
 @Injectable()
 export class EntrepreneursService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(private prismaService: PrismaService,
+    private jwtService: JwtService,
+  ) { }
+
+
+  async signup(createEntrepreneurDto: CreateEntrepreneurDTO) {
+    const { email, password } = createEntrepreneurDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+      const entrepreneur = await this.prismaService.entrepreneurs.create({
+        data: {
+          ...createEntrepreneurDto,
+          password: hashedPassword,
+          products: {
+            create: createEntrepreneurDto.products?.map(product => ({
+              name: product.name,
+              description: product.description,
+              price: product.price,
+              image: product.image,
+            })) || [],
+          },
+        },
+      });
+      const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
+      return { entrepreneur, token };
+    } catch (error) {
+      // Manejo de errores
+      throw new InternalServerErrorException('Error signing up');
+    }
+  }
+
+  async login(loginCredentials: { email: string; password: string }) {
+    const { email, password } = loginCredentials;
+
+    const entrepreneur = await this.prismaService.entrepreneurs.findUnique({ where: { email } });
+    if (!entrepreneur) {
+      throw new NotFoundException('Entrepreneur not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, entrepreneur.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
+    return { entrepreneur, token };
+  }
+
 
   async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
     console.log('Attempting to create entrepreneur with data:', createEntrepreneurDto);
@@ -21,13 +71,13 @@ export class EntrepreneursService {
           data: {
             ...entrepreneurData,
             products: {
-              create: products.map(product => ({
+              create: products?.map(product => ({
                 name: product.name,
                 description: product.description,
                 price: product.price,
                 image: product.image,
-              })),
-            },
+              })) || [],
+            }
           },
           select: {
             id: true,
@@ -218,5 +268,19 @@ export class EntrepreneursService {
     } catch (error) {
       throw new InternalServerErrorException('An unexpected error occurred while deleting the entrepreneur');
     }
+  }
+
+  async findByEmail(email: string) {
+    return this.prismaService.entrepreneurs.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true,  // Incluye la contraseña para verificar
+        firstName: true,
+        lastName: true,
+
+      },
+    });
   }
 }
