@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { ParseIntPipe } from '@nestjs/common';
 
 // Ejemplos de solicitudes y respuestas
 const exampleProduct = {
@@ -28,7 +27,6 @@ const exampleProductErrorResponse = {
 @ApiTags('products')
 @Controller('products')
 @UsePipes(new ValidationPipe({ transform: true }))
-
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
@@ -51,22 +49,21 @@ export class ProductsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a product by id' })
   @ApiResponse({ status: 200, description: 'The product has been successfully retrieved.' })
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) { // Aplicar ParseIntPipe
+    return this.productsService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product by id' })
   @ApiResponse({ status: 200, description: 'The product has been successfully updated.' })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateProductDto: UpdateProductDto) {
+    return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product by id' })
   @ApiResponse({ status: 200, description: 'The product has been successfully deleted.' })
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) { // Aplicar ParseIntPipe
+    return this.productsService.remove(id);
   }
 }
-
