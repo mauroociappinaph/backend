@@ -10,16 +10,118 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDTO) {
     try {
-      return await this.prismaService.product.create({
-        data: createProductDto,
+      const result = await this.prismaService.$transaction(async (prisma) => {
+        // Crear un nuevo producto
+        const product = await prisma.product.create({
+          data: {
+            name: createProductDto.name,
+            description: createProductDto.description,
+            price: createProductDto.price,
+            image: createProductDto.image,
+            entrepreneursId: createProductDto.entrepreneurId // Usar entrepreneursId como definido en el modelo
+          },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            image: true,
+            entrepreneursId: true // Incluye otros campos si es necesario, pero excluye createdAt y updatedAt
+          }
+        });
+
+        if (createProductDto.entrepreneurId) {
+          await prisma.entrepreneurs.update({
+            where: { id: createProductDto.entrepreneurId },
+            data: {
+              lastProductCreated: product.id,
+            },
+          });
+        }
+
+        return product;
       });
+
+      return result;
     } catch (error) {
+      console.error('Error while creating product:', error);
+
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException(`Product with name ${createProductDto.name} already exists`);
         }
       }
       throw new InternalServerErrorException('An unexpected error occurred while creating the product');
+    }
+  }
+
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    try {
+      const result = await this.prismaService.$transaction(async (prisma) => {
+        const product = await prisma.product.update({
+          where: { id },
+          data: updateProductDto,
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            image: true,
+            entrepreneursId: true // Incluye otros campos si es necesario, pero excluye createdAt y updatedAt
+          }
+        });
+
+        if (updateProductDto.entrepreneurId) {
+          await prisma.entrepreneurs.update({
+            where: { id: updateProductDto.entrepreneurId },
+            data: {
+              lastProductUpdated: product.id, // Usar este campo ahora definido
+            },
+          });
+        }
+
+        return product;
+      });
+
+      return result;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException(`Product with name ${updateProductDto.name} already exists`);
+        }
+      }
+      throw new InternalServerErrorException('An unexpected error occurred while updating the product');
+    }
+  }
+
+  async remove(id: number) {
+    try {
+      const result = await this.prismaService.$transaction(async (prisma) => {
+        // Buscar el producto
+        const product = await prisma.product.findUnique({ where: { id } });
+        if (!product) {
+          throw new NotFoundException(`Product with id ${id} not found`);
+        }
+
+        // Eliminar el producto
+        await prisma.product.delete({ where: { id } });
+
+        // Suponiendo que queremos realizar otra operación, como actualizar un registro relacionado
+        if (product.entrepreneursId) {
+          await prisma.entrepreneurs.update({
+            where: { id: product.entrepreneursId },
+            data: {
+              lastProductDelete: product.id,
+            },
+          });
+        }
+
+        return { message: `Product with id ${id} has been deleted successfully` };
+      });
+
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException('An unexpected error occurred while deleting the product');
     }
   }
 
@@ -32,8 +134,7 @@ export class ProductsService {
           description: true,
           price: true,
           image: true,
-          entrepreneursId: true,  // Incluir este si es relevante
-          // Excluir createdAt y updatedAt
+          entrepreneursId: true, // Incluye si es relevante
         },
       });
     } catch (error) {
@@ -51,8 +152,7 @@ export class ProductsService {
           description: true,
           price: true,
           image: true,
-          entrepreneursId: true,  // Incluir este si es relevante
-          // Excluir createdAt y updatedAt
+          entrepreneursId: true, // Incluye si es relevante
         },
       });
       if (!productFound) {
@@ -64,46 +164,6 @@ export class ProductsService {
         throw new BadRequestException('Invalid product ID format');
       }
       throw new InternalServerErrorException('An unexpected error occurred while retrieving the product');
-    }
-  }
-
-  async update(id: number, updateProductDto: UpdateProductDto) {
-    try {
-      const productExists = await this.prismaService.product.findUnique({ where: { id } });
-      if (!productExists) {
-        throw new NotFoundException(`Product with id ${id} not found`);
-      }
-
-      await this.prismaService.product.update({
-        where: { id },
-        data: updateProductDto,
-      });
-
-      return { message: `Product with id ${id} has been updated successfully` }; // Respuesta simplificada
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ConflictException(`Product with name ${updateProductDto.name} already exists`);
-        }
-      }
-      throw new InternalServerErrorException('An unexpected error occurred while updating the product');
-    }
-  }
-
-  async remove(id: number) {
-    try {
-      const productExists = await this.prismaService.product.findUnique({ where: { id } });
-      if (!productExists) {
-        throw new NotFoundException(`Product with id ${id} not found`);
-      }
-
-      await this.prismaService.product.delete({
-        where: { id },
-      });
-
-      return { message: `Product with id ${id} has been deleted successfully` }; // 
-    } catch (error) {
-      throw new InternalServerErrorException('An unexpected error occurred while deleting the product');
     }
   }
 }
