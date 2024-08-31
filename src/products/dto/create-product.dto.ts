@@ -1,6 +1,9 @@
 import { IsString, IsNotEmpty, IsNumber, Min, IsOptional, IsInt } from 'class-validator';
 
 export class CreateProductDTO {
+
+
+
     @IsString()
     @IsNotEmpty({ message: 'Product name must not be empty' })
     name: string;
