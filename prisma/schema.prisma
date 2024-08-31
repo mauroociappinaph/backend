@@ -23,8 +23,7 @@ model Entrepreneurs {
   id                  Int       @id @default(autoincrement())
   email               String    @unique
   //password            String    @bcrypt
-  // 
-  //passwordHash        String
+  //repeatedPassword    String    @bcrypt
   firstName           String
   lastName            String
   phoneNumber         String?
@@ -36,6 +35,9 @@ model Entrepreneurs {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   products            Product[]
+  lastProductCreated  Int?
+  lastProductUpdated  Int?
+  lastProductDelete   Int?
 }
 
 model Product {

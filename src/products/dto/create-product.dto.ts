@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, Min, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, Min, IsOptional, IsInt } from 'class-validator';
 
 export class CreateProductDTO {
     @IsString()
@@ -16,4 +16,8 @@ export class CreateProductDTO {
     @IsOptional()
     @IsString({ message: 'Image must be a string' })
     image?: string;
+
+    @IsOptional()
+    @IsInt({ message: 'Entrepreneur ID must be an integer' })
+    entrepreneurId?: number;
 }

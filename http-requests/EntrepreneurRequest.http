@@ -3,7 +3,7 @@ GET http://localhost:4000/api/entrepreneurs
 Content-Type: application/json
 
 ### Obtener un emprendedor específico por ID
-GET http://localhost:4000/api/entrepreneurs/1
+GET http://localhost:4000/api/entrepreneurs/15
 Content-Type: application/json
 
 ### Crear un nuevo emprendedor
