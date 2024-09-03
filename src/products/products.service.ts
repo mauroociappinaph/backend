@@ -40,6 +40,8 @@ export class ProductsService {
           });
         }
 
+        throw new InternalServerErrorException();
+
         return product;
       });
 

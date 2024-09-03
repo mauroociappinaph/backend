@@ -46,7 +46,6 @@ export class EntrepreneursService {
         throw new NotFoundException('Entrepreneur not found');
       }
 
-      // Log the hashed password from the database and the input password for debugging
       console.log('Hashed password in DB:', entrepreneur.password);
       console.log('Input password:', password);
 
