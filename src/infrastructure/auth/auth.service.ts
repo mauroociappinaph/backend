@@ -3,8 +3,8 @@
 import { Injectable, ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { EntrepreneursService } from '../entrepreneurs/entrepreneurs.service';
-import { CreateEntrepreneurDTO } from '../entrepreneurs/dto/create-entrepreneur.dto';
+import { EntrepreneursService } from '../../entrepreneurs/entrepreneurs.service';
+import { CreateEntrepreneurDTO } from '../../entrepreneurs/dto/create-entrepreneur.dto';
 
 @Injectable()
 export class AuthService {

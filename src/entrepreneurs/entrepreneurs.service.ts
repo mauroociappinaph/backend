@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../infrastructure/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { JwtService, JwtModule } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class EntrepreneursService {
