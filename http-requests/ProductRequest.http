@@ -31,3 +31,5 @@ Content-Type: application/json
 ### Eliminar un producto
 DELETE http://localhost:4000/api/products/26
 Content-Type: application/json
+
+
