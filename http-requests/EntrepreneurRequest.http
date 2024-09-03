@@ -6,23 +6,55 @@ Content-Type: application/json
 GET http://localhost:4000/api/entrepreneurs
 Content-Type: application/json
 
+### Obtener un emprendedor específico por email
+GET http://localhost:4000/api/entrepreneurs/email/c@c.com
+Content-Type: application/json
+
 ### Crear un nuevo emprendedor
 POST http://localhost:4000/api/entrepreneurs
 Content-Type: application/json
 
 {
-    "firstName": "Mauro",
-    "lastName": "Mauro",
-    "email": "Mauro@example.com",
-    "businessName": "John'sk Business",
-    "products": [
-        {
-            "name": "Mauro",
-            "description": "Description for producmt 1",
-            "price": 100,
-            "image": "https://example.com/product1.jpg"
-        }
-    ]
+  "email": "emprendedjjokr@c",
+  "password": "password123",
+  "firstName": "Jusdan",
+  "lastName": "Pésrez",
+  "businessName": "Mi Emprsesa",
+  "products": [
+    {
+      "name": "Producddtso 1",
+      "description": "Descripción del producto 1",
+      "price": 19.99,
+      "image": "http://url-a-la-imagen.com/imagen1.jpg"
+    },
+    {
+      "name": "Produddcto 2",
+      "description": "Descripción del producto 2",
+      "price": 29.99,
+      "image": "http://url-a-la-imagen.com/imagen2.jpg"
+    }
+  ]
+}
+
+### Registrar un nuevo emprendedor (Sign Up)
+POST http://localhost:4000/api/entrepreneurs/signup
+Content-Type: application/json
+
+{
+  "email": "z@z.com",
+  "password": "123456",
+  "firstName": "Carlos",
+  "lastName": "López",
+  "businessName": "Innovación Tech"
+}
+
+### Iniciar sesión (Log In)
+POST http://localhost:4000/api/entrepreneurs/login
+Content-Type: application/json
+
+{
+  "email": "z@z.com",
+  "password": "123456"
 }
 
 ### Actualizar un emprendedor existente
@@ -45,7 +77,6 @@ Content-Type: application/json
 }
 
 ### Eliminar un emprendedor
-DELETE http://localhost:4000/api/entrepreneurs/1
+DELETE http://localhost:4000/api/entrepreneurs/2
 Content-Type: application/json
-
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { EntrepreneursService } from './entrepreneurs.service';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
@@ -90,4 +90,20 @@ export class EntrepreneursController {
   remove(@Param('id') id: string) {
     return this.entrepreneursService.remove(+id);
   }
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Find entrepreneur by email' })
+  @ApiResponse({ status: 200, description: 'The entrepreneur has been successfully found.' })
+  @ApiResponse({ status: 404, description: 'Entrepreneur not found.' })
+  async findByEmail(@Param('email') email: string) {
+    try {
+      const entrepreneur = await this.entrepreneursService.findByEmail(email);
+      if (!entrepreneur) {
+        throw new NotFoundException(`Entrepreneur with email ${email} not found`);
+      }
+      return entrepreneur;
+    } catch (error) {
+      throw new NotFoundException(`Error occurred while finding entrepreneur with email ${email}: ${error.message}`);
+    }
+  }
+
 }
