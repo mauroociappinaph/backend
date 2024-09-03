@@ -2,8 +2,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { EntrepreneursService } from './entrepreneurs.service';
 import { EntrepreneursController } from './entrepreneurs.controller';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthModule } from '../auth/auth.module'; // Asegúrate de importar correctamente
+import { PrismaService } from '../infrastructure/prisma/prisma.service';
+import { AuthModule } from 'src/infrastructure/auth/auth.module';
 
 @Module({
   imports: [forwardRef(() => AuthModule)], // Usa forwardRef si es necesario

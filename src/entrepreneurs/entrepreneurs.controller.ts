@@ -3,7 +3,7 @@ import { EntrepreneursService } from './entrepreneurs.service';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/infrastructure/auth/auth.service';
 
 // Ejemplos de solicitudes y respuestas
 const exampleEntrepreneur = {
