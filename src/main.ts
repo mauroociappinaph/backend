@@ -6,9 +6,13 @@ import * as morgan from 'morgan';
 import { CORS } from './constant';
 import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './config/winston-logger.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(winstonConfig),
+  });
   app.setGlobalPrefix('api');
 
   app.useGlobalFilters(new AllExceptionsFilter());
@@ -20,6 +24,9 @@ async function bootstrap() {
     .addTag('entrepreneurs')
     .addTag('products')
     .build();
+
+
+
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

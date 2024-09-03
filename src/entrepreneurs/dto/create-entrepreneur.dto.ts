@@ -1,6 +1,6 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateNested, IsNumber, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateNested, IsNumber, Min, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UpdateProductDto } from '../../products/dto/update-product.dto';
+
 
 export class CreateProductDTO {
 
@@ -29,6 +29,10 @@ export class CreateEntrepreneurDTO {
     @IsString()
     @IsNotEmpty()
     firstName: string;
+
+    @IsString()
+    @MinLength(6)
+    password: string;
 
     @IsString()
     @IsNotEmpty()
