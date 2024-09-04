@@ -7,7 +7,7 @@ GET http://localhost:4000/api/entrepreneurs
 Content-Type: application/json
 
 ### Obtener un emprendedor específico por email
-GET http://localhost:4000/api/entrepreneurs/email/c@c.com
+GET http://localhost:4000/api/entrepreneurs/email/john.doe@example.com
 Content-Type: application/json
 
 ### Crear un nuevo emprendedor
@@ -41,7 +41,7 @@ POST http://localhost:4000/api/entrepreneurs/signup
 Content-Type: application/json
 
 {
-  "email": "zzs@zz.com",
+  "email": "n@n.com",
   "password": "123456",
   "firstName": "Carlos",
   "lastName": "López",
