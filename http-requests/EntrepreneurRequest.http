@@ -3,7 +3,8 @@ GET http://localhost:4000/api/entrepreneurs
 Content-Type: application/json
 
 ### Obtener un emprendedor específico por ID
-GET http://localhost:4000/api/entrepreneurs
+GET http://localhost:4000/api/entrepreneurs/19
+
 Content-Type: application/json
 
 ### Obtener un emprendedor específico por email
