@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateNested, IsNumber, Min, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, ValidateNested, IsNumber, Min, MinLength, IsEmail } from 'class-validator';
 import { Type } from 'class-transformer';
 
 
@@ -29,15 +29,11 @@ export class CreateEntrepreneurDTO {
     @IsString()
     @IsNotEmpty()
     firstName: string;
-
-    @IsString()
     @MinLength(6)
     password: string;
-
     @IsString()
     @IsNotEmpty()
     lastName: string;
-
     @IsString()
     @IsNotEmpty()
     email: string;
@@ -51,4 +47,13 @@ export class CreateEntrepreneurDTO {
     @ValidateNested({ each: true })
     @Type(() => CreateProductDTO)
     products?: CreateProductDTO[];
+}
+
+export class LoginDto {
+    @IsEmail()
+    email: string;
+
+    @IsString()
+    @MinLength(6)
+    password: string;
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
@@ -20,51 +20,46 @@ export class EntrepreneursService {
     try {
       const entrepreneur = await this.prismaService.entrepreneurs.create({
         data: {
-          email: email,
+          email,
           password: hashedPassword,
-          firstName: firstName,
-          lastName: lastName,
-          businessName: businessName,
+          firstName,
+          lastName,
+          businessName,
         },
       });
-      const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
-      return { entrepreneur, token };
+      return entrepreneur;
     } catch (error) {
-      console.error('Error during signup:', error.message);
-      throw new InternalServerErrorException('Error signing up');
+      throw new UnauthorizedException('Sign up failed');
     }
   }
 
-  async login(loginCredentials: { email: string; password: string }) {
-    const { email, password } = loginCredentials;
+  async validateEntrepreneur(email: string, password: string) {
+    const entrepreneur = await this.prismaService.entrepreneurs.findUnique({
+      where: { email },
+    });
 
-    try {
-      console.log('Attempting to log in user:', email);
-      const entrepreneur = await this.prismaService.entrepreneurs.findUnique({ where: { email } });
-      if (!entrepreneur) {
-        console.error('Login failed: User not found');
-        throw new NotFoundException('Entrepreneur not found');
-      }
-
-      console.log('Hashed password in DB:', entrepreneur.password);
-      console.log('Input password:', password);
-
-      const isPasswordValid = await bcrypt.compare(password, entrepreneur.password);
-      if (!isPasswordValid) {
-        console.error('Login failed: Invalid credentials');
-        throw new BadRequestException('Invalid credentials');
-      }
-
-      const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
-      console.log('User logged in successfully:', entrepreneur.id);
-      return { entrepreneur, token };
-    } catch (error) {
-      console.error('Error during login:', error.message);
-      throw new InternalServerErrorException('Error logging in');
+    if (!entrepreneur) {
+      return null;
     }
+
+    const passwordMatches = await bcrypt.compare(password, entrepreneur.password);
+    if (!passwordMatches) {
+      return null;
+    }
+
+    return entrepreneur;
   }
 
-  // Resto de los métodos (create, update, findAll, etc.) permanece sin cambios
+  async login(entrepreneur: any) {
+    const payload = { email: entrepreneur.email, sub: entrepreneur.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+
+
+
 
 
   async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
