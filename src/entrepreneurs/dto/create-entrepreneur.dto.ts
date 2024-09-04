@@ -29,11 +29,14 @@ export class CreateEntrepreneurDTO {
     @IsString()
     @IsNotEmpty()
     firstName: string;
+
     @MinLength(6)
     password: string;
+
     @IsString()
     @IsNotEmpty()
     lastName: string;
+
     @IsString()
     @IsNotEmpty()
     email: string;
