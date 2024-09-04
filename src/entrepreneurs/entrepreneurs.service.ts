@@ -54,6 +54,8 @@ export class EntrepreneursService {
     const payload = { email: entrepreneur.email, sub: entrepreneur.id };
     return {
       access_token: this.jwtService.sign(payload),
+      id: entrepreneur.id,
+      email: entrepreneur.email,
     };
   }
 
