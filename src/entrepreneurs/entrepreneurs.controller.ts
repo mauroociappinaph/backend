@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { EntrepreneursService } from './entrepreneurs.service';
-import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
+import { CreateEntrepreneurDTO, LoginDto } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from 'src/infrastructure/auth/auth.service';
@@ -42,16 +42,22 @@ export class EntrepreneursController {
 
 
   @Post('signup')
-  @ApiOperation({ summary: 'Register a new entrepreneur' })
-  signup(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
-    return this.authService.signup(createEntrepreneurDto);
+  async signUp(@Body() createEntrepreneurDto: CreateEntrepreneurDTO) {
+    return await this.entrepreneursService.signup(createEntrepreneurDto);
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'Login as an entrepreneur' })
-  login(@Body() loginCredentials: { email: string; password: string }) {
-    const { email, password } = loginCredentials;
-    return this.authService.login(email, password);
+  async login(@Body() loginDto: LoginDto) {
+    const entrepreneur = await this.entrepreneursService.validateEntrepreneur(
+      loginDto.email,
+      loginDto.password,
+    );
+
+    if (!entrepreneur) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return this.entrepreneursService.login(entrepreneur);
   }
 
   @Post()
@@ -90,4 +96,20 @@ export class EntrepreneursController {
   remove(@Param('id') id: string) {
     return this.entrepreneursService.remove(+id);
   }
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Find entrepreneur by email' })
+  @ApiResponse({ status: 200, description: 'The entrepreneur has been successfully found.' })
+  @ApiResponse({ status: 404, description: 'Entrepreneur not found.' })
+  async findByEmail(@Param('email') email: string) {
+    try {
+      const entrepreneur = await this.entrepreneursService.findByEmail(email);
+      if (!entrepreneur) {
+        throw new NotFoundException(`Entrepreneur with email ${email} not found`);
+      }
+      return entrepreneur;
+    } catch (error) {
+      throw new NotFoundException(`Error occurred while finding entrepreneur with email ${email}: ${error.message}`);
+    }
+  }
+
 }

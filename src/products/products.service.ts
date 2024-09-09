@@ -11,6 +11,7 @@ export class ProductsService {
   async create(createProductDto: CreateProductDTO) {
     try {
       this.logger.log('Creating a new product'); // Log informativo
+
       const result = await this.prismaService.$transaction(async (prisma) => {
         // Crear un nuevo producto
         const product = await prisma.product.create({
@@ -31,6 +32,7 @@ export class ProductsService {
           },
         });
 
+        // Actualizar el último producto creado para el emprendedor
         if (createProductDto.entrepreneurId) {
           await prisma.entrepreneurs.update({
             where: { id: createProductDto.entrepreneurId },
@@ -40,7 +42,7 @@ export class ProductsService {
           });
         }
 
-        return product;
+        return product; // Retornar el producto creado
       });
 
       this.logger.log(`Product created with id ${result.id}`); // Log de éxito
@@ -56,7 +58,6 @@ export class ProductsService {
       throw new InternalServerErrorException('An unexpected error occurred while creating the product');
     }
   }
-
   async update(id: number, updateProductDto: UpdateProductDto) {
     try {
       const result = await this.prismaService.$transaction(async (prisma) => {

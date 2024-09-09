@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { CreateEntrepreneurDTO } from './dto/create-entrepreneur.dto';
 import { UpdateEntrepreneurDto } from './dto/update-entrepreneur.dto';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
@@ -14,14 +14,63 @@ export class EntrepreneursService {
 
 
   async signup(createEntrepreneurDto: CreateEntrepreneurDTO) {
-    const { email, password } = createEntrepreneurDto;
+    const { email, password, firstName, lastName, businessName } = createEntrepreneurDto;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
       const entrepreneur = await this.prismaService.entrepreneurs.create({
         data: {
-          ...createEntrepreneurDto,
+          email,
           password: hashedPassword,
+          firstName,
+          lastName,
+          businessName,
+        },
+      });
+      return entrepreneur;
+    } catch (error) {
+      throw new UnauthorizedException('Sign up failed');
+    }
+  }
+
+  async validateEntrepreneur(email: string, password: string) {
+    const entrepreneur = await this.prismaService.entrepreneurs.findUnique({
+      where: { email },
+    });
+
+    if (!entrepreneur) {
+      return null;
+    }
+
+    const passwordMatches = await bcrypt.compare(password, entrepreneur.password);
+    if (!passwordMatches) {
+      return null;
+    }
+
+    return entrepreneur;
+  }
+
+  async login(entrepreneur: any) {
+    const payload = { email: entrepreneur.email, sub: entrepreneur.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      id: entrepreneur.id,
+      email: entrepreneur.email,
+    };
+  }
+
+
+
+
+
+
+  async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
+    console.log('Creating a new entrepreneur:', createEntrepreneurDto.email);
+    try {
+      const entrepreneur = await this.prismaService.entrepreneurs.create({
+        data: {
+          ...createEntrepreneurDto,
+          password: await bcrypt.hash(createEntrepreneurDto.password, 10),
           products: {
             create: createEntrepreneurDto.products?.map(product => ({
               name: product.name,
@@ -32,92 +81,14 @@ export class EntrepreneursService {
           },
         },
       });
-      const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
-      return { entrepreneur, token };
+      console.log('Entrepreneur created successfully:', entrepreneur.id);
+      return entrepreneur;
     } catch (error) {
-      // Manejo de errores
-      throw new InternalServerErrorException('Error signing up');
-    }
-  }
-
-  async login(loginCredentials: { email: string; password: string }) {
-    const { email, password } = loginCredentials;
-
-    const entrepreneur = await this.prismaService.entrepreneurs.findUnique({ where: { email } });
-    if (!entrepreneur) {
-      throw new NotFoundException('Entrepreneur not found');
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, entrepreneur.password);
-    if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
-    }
-
-    const token = this.jwtService.sign({ id: entrepreneur.id, email: entrepreneur.email });
-    return { entrepreneur, token };
-  }
-
-
-  async create(createEntrepreneurDto: CreateEntrepreneurDTO) {
-    console.log('Attempting to create entrepreneur with data:', createEntrepreneurDto);
-
-    try {
-      const { products, ...entrepreneurData } = createEntrepreneurDto;
-
-      console.log('Creating entrepreneur with data:', entrepreneurData, products);
-
-      const result = await this.prismaService.$transaction(async (prisma) => {
-        const entrepreneur = await prisma.entrepreneurs.create({
-          data: {
-            ...entrepreneurData,
-            products: {
-              create: products?.map(product => ({
-                name: product.name,
-                description: product.description,
-                price: product.price,
-                image: product.image,
-              })) || [],
-            }
-          },
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            businessName: true,
-            products: {
-              select: {
-                id: true,
-                name: true,
-                description: true,
-                price: true,
-                image: true,
-                entrepreneursId: true,
-              },
-            },
-          },
-        });
-
-        console.log('Entrepreneur created:', entrepreneur);
-
-        return entrepreneur;
-      });
-
-      return result;
-    } catch (error) {
-      console.error('Error while creating entrepreneur:', error);
-
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ConflictException('Entrepreneur with this email already exists');
-        }
-      } else if (error instanceof Prisma.PrismaClientValidationError) {
-        console.error('Validation error:', error.message);
-        throw new BadRequestException('Validation error while creating entrepreneur');
-      } else {
-        console.error('Unexpected error:', error.message);
-        throw new InternalServerErrorException('An unexpected error occurred while creating the entrepreneur');
+      console.error('Error creating entrepreneur:', error.message);
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new ConflictException('Entrepreneur with this email already exists');
       }
+      throw new InternalServerErrorException('An unexpected error occurred while creating the entrepreneur');
     }
   }
 
@@ -271,16 +242,17 @@ export class EntrepreneursService {
   }
 
   async findByEmail(email: string) {
+    console.log('Searching for entrepreneur by email:', email);
     return this.prismaService.entrepreneurs.findUnique({
       where: { email },
       select: {
         id: true,
         email: true,
-        password: true,  // Incluye la contraseña para verificar
+        password: true,
         firstName: true,
         lastName: true,
-
       },
     });
   }
+
 }
