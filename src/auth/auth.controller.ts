@@ -1,9 +1,9 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt.strategy/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 
-@ApiTags('auth')  // Define una categoría "auth" para los endpoints
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
@@ -22,17 +22,24 @@ export class AuthController {
         }
     })
     async login(@Request() req) {
-        // Lógica de autenticación del login
-        return this.authService.login(req.body);
+        try {
+            const user = await this.authService.validateUser(req.body.username, req.body.password);
+            if (!user) {
+                throw new HttpException('Credenciales incorrectas', HttpStatus.UNAUTHORIZED);
+            }
+            return this.authService.login(user);
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('protected')
     @ApiOperation({ summary: 'Ruta protegida' })
-    @ApiBearerAuth()  // Indica que este endpoint necesita autenticación Bearer
+    @ApiBearerAuth()
     @ApiResponse({ status: 200, description: 'Acceso autorizado.' })
     @ApiResponse({ status: 401, description: 'No autorizado.' })
     getProtected(@Request() req) {
-        return req.user; // Información del usuario autenticado
+        return req.user;
     }
 }
