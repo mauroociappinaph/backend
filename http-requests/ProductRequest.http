@@ -19,6 +19,19 @@ Content-Type: application/json
 }
 
 ### Actualizar un producto existente
+POST http://localhost:4000/api/products
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Nuevo producto",
+  "description": "Descripción del producto",
+  "price": 90,
+  "image": "https://example.com/image.jpg",
+  "entrepreneurId": 21
+}
+
+### Actualizar un producto existente
 PATCH  http://localhost:4000/api/products/26
 Content-Type: application/json
 
