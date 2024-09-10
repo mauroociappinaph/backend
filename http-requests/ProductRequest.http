@@ -1,4 +1,4 @@
-### Obtener todos los productos
+POST http://localhost:3000/cloudinary/upload/:entrepreneurId/:productId### Obtener todos los productos
 GET http://localhost:4000/api/products
 Content-Type: application/json
 
