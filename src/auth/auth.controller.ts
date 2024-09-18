@@ -33,6 +33,14 @@ export class AuthController {
         }
     }
 
+    @Post('logout')
+    @ApiOperation({ summary: 'Cerrar sesión' })
+    @ApiResponse({ status: 200, description: 'Sesión cerrada con éxito.' })
+    async logout() {
+        // Aquí podrías agregar lógica adicional si estás manejando un sistema de invalidación de tokens
+        return { message: 'Logout successful' };
+    }
+
     @UseGuards(JwtAuthGuard)
     @Post('protected')
     @ApiOperation({ summary: 'Ruta protegida' })

@@ -58,6 +58,11 @@ Content-Type: application/json
   "password": "123456"
 }
 
+### Cerrar sesion
+POST http://localhost:4000/api/entrepreneurs/logout
+Content-Type: application/json
+
+
 ### Actualizar un emprendedor existente
 PATCH http://localhost:4000/api/entrepreneurs/4
 Content-Type: application/json
