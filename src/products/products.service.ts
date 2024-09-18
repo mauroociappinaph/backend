@@ -1,19 +1,25 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException, InternalServerErrorException, Logger, Inject } from '@nestjs/common';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { Cache } from 'cache-manager'; // Importación del caché
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 
 @Injectable()
 export class ProductsService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(
+    private prismaService: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache // Inyección del caché
+  ) { }
+
   private readonly logger = new Logger(ProductsService.name);
+
   async create(createProductDto: CreateProductDTO) {
     try {
-      this.logger.log('Creating a new product'); // Log informativo
+      this.logger.log('Creating a new product');
 
       const result = await this.prismaService.$transaction(async (prisma) => {
-        // Crear un nuevo producto
         const product = await prisma.product.create({
           data: {
             name: createProductDto.name,
@@ -32,7 +38,6 @@ export class ProductsService {
           },
         });
 
-        // Actualizar el último producto creado para el emprendedor
         if (createProductDto.entrepreneurId) {
           await prisma.entrepreneurs.update({
             where: { id: createProductDto.entrepreneurId },
@@ -42,13 +47,17 @@ export class ProductsService {
           });
         }
 
-        return product; // Retornar el producto creado
+        return product;
       });
 
-      this.logger.log(`Product created with id ${result.id}`); // Log de éxito
+      this.logger.log(`Product created with id ${result.id}`);
+
+      // Invalida la caché al crear un producto
+      await this.cacheManager.del('products');
+
       return result;
     } catch (error) {
-      this.logger.error('Error while creating product', error.stack); // Log de error
+      this.logger.error('Error while creating product', error.stack);
 
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -58,6 +67,7 @@ export class ProductsService {
       throw new InternalServerErrorException('An unexpected error occurred while creating the product');
     }
   }
+
   async update(id: number, updateProductDto: UpdateProductDto) {
     try {
       const result = await this.prismaService.$transaction(async (prisma) => {
@@ -70,25 +80,31 @@ export class ProductsService {
             description: true,
             price: true,
             image: true,
-            entrepreneursId: true // Incluye otros campos si es necesario, pero excluye createdAt y updatedAt
-          }
+            entrepreneursId: true,
+          },
         });
 
         if (updateProductDto.entrepreneurId) {
           await prisma.entrepreneurs.update({
             where: { id: updateProductDto.entrepreneurId },
             data: {
-              lastProductUpdated: product.id, // Usar este campo ahora definido
+              lastProductUpdated: product.id,
             },
           });
         }
+
         this.logger.log(`Product with id ${id} updated successfully`);
+
+        // Invalida la caché al actualizar un producto
+        await this.cacheManager.del('products');
+
         return product;
       });
 
       return result;
     } catch (error) {
       this.logger.error(`Error while updating product with id ${id}`, error.stack);
+
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new ConflictException(`Product with name ${updateProductDto.name} already exists`);
@@ -102,16 +118,13 @@ export class ProductsService {
     try {
       this.logger.log(`Removing product with id ${id}`);
       const result = await this.prismaService.$transaction(async (prisma) => {
-        // Buscar el producto
         const product = await prisma.product.findUnique({ where: { id } });
         if (!product) {
           throw new NotFoundException(`Product with id ${id} not found`);
         }
 
-        // Eliminar el producto
         await prisma.product.delete({ where: { id } });
 
-        // Suponiendo que queremos realizar otra operación, como actualizar un registro relacionado
         if (product.entrepreneursId) {
           await prisma.entrepreneurs.update({
             where: { id: product.entrepreneursId },
@@ -120,7 +133,12 @@ export class ProductsService {
             },
           });
         }
+
         this.logger.log(`Product with id ${id} removed successfully`);
+
+        // Invalida la caché al eliminar un producto
+        await this.cacheManager.del('products');
+
         return { message: `Product with id ${id} has been deleted successfully` };
       });
 
@@ -133,16 +151,31 @@ export class ProductsService {
 
   async findAll() {
     try {
-      return await this.prismaService.product.findMany({
+      // Intenta obtener los productos desde la caché
+      const cachedProducts = await this.cacheManager.get('products');
+      if (cachedProducts) {
+        this.logger.log('Serving products from cache');
+        return cachedProducts;
+      }
+
+      // Si no están en la caché, realiza la consulta a la base de datos
+      const products = await this.prismaService.product.findMany({
         select: {
           id: true,
           name: true,
           description: true,
           price: true,
           image: true,
-          entrepreneursId: true, // Incluye si es relevante
+          entrepreneursId: true,
         },
       });
+
+      // Almacena los productos en la caché
+      await this.cacheManager.set('products', products, 600);
+
+      this.logger.log('Serving products from database');
+
+      return products;
     } catch (error) {
       throw new InternalServerErrorException('An unexpected error occurred while retrieving products');
     }
@@ -158,12 +191,14 @@ export class ProductsService {
           description: true,
           price: true,
           image: true,
-          entrepreneursId: true, // Incluye si es relevante
+          entrepreneursId: true,
         },
       });
+
       if (!productFound) {
         throw new NotFoundException(`Product with id ${id} not found`);
       }
+
       return productFound;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
