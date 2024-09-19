@@ -28,7 +28,7 @@ Asegúrate de tener instalados los siguientes requisitos antes de comenzar:
 1. Clona este repositorio:
 
    ```bash
-   git clone
+   git clone https://github.com/mauroociappinaph/backend
    ```
 
 2. Dirígete al directorio del proyecto:
@@ -47,12 +47,14 @@ Asegúrate de tener instalados los siguientes requisitos antes de comenzar:
 
 4. Configura la base de datos y Redis en el archivo `.env`.
 
-   Ejemplo de configuración `.env`:
+   Configuración `.env`:
 
    ```
-   REDIS_URL=redis://localhost:6379
-   JWT_SECRET=your_jwt_secret
-   CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+   DATABASE_URL="file:./dev.db"
+   JWT_SECRET=tu_clave_secreta_aqui
+   CLOUDINARY_NAME= emprendeart_img
+   CLOUDINARY_API_KEY= 456967315687326
+   CLOUDINARY_API_SECRET= JvH4A6RhMv85J8DZlnE6p6G_mM0
    ```
 
 5. Genera el esquema de Prisma:
@@ -75,7 +77,7 @@ Para iniciar el servidor en modo desarrollo, utiliza el siguiente comando:
 npm run start:dev
 ```
 
-El servidor estará disponible en [http://localhost:3000](http://localhost:3000).
+El servidor estará disponible en [http://localhost:4000](http://localhost:4000).
 
 ### Comandos adicionales:
 
