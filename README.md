@@ -1,104 +1,144 @@
-# Proyecto Backend con NestJS
+# Backend Application
 
-Este proyecto es una aplicación backend desarrollada con el framework NestJS. Utiliza varias bibliotecas y herramientas para proporcionar una estructura modular y funcionalidades específicas, como autenticación JWT, manejo de errores, configuración de Prisma para la base de datos, entre otros.
+## 📖 Descripción
 
-## Estructura del Proyecto
+Este proyecto es un backend desarrollado con **NestJS** y **TypeScript** que incluye funcionalidades de autenticación, manejo de caché, gestión de usuarios y productos, integración con **Cloudinary** para la subida de imágenes y uso de **Prisma** para interactuar con la base de datos. Además, utiliza **Redis** para el almacenamiento en caché y **JWT** para la autenticación segura.
 
-El proyecto sigue una estructura modular, donde cada funcionalidad se encuentra en su propio módulo. A continuación se detalla la estructura del proyecto:
+## ✨ Características Principales
 
-├── src
-│ ├── auth # Módulo de autenticación
-│ │ ├── auth.module.ts
-│ │ ├── auth.service.ts
-│ │ ├── jwt-payload.interface.ts
-│ │ └── jwt.strategy.ts
-│ ├── config # Configuraciones generales
-│ │ └── winston-logger.config.ts
-│ ├── constant # Constantes del proyecto
-│ │ ├── cors.ts
-│ │ └── index.ts
-│ ├── entrepreneurs # Módulo de emprendedores
-│ │ ├── dto
-│ │ │ ├── create-entrepreneur.dto.ts
-│ │ │ └── update-entrepreneur.dto.ts
-│ │ ├── entities
-│ │ │ └── entrepreneur.entity.ts
-│ │ ├── entrepreneurs.controller.spec.ts
-│ │ ├── entrepreneurs.controller.ts
-│ │ ├── entrepreneurs.module.ts
-│ │ ├── entrepreneurs.service.spec.ts
-│ │ └── entrepreneurs.service.ts
-│ ├── prisma # Configuración de Prisma
-│ │ └── prisma.service.ts
-│ ├── products # Módulo de productos
-│ │ ├── dto
-│ │ │ ├── create-product.dto.ts
-│ │ │ ├── product.dto.ts
-│ │ │ └── update-product.dto.ts
-│ │ ├── entities
-│ │ │ └── product.entity.ts
-│ │ ├── products.controller.spec.ts
-│ │ ├── products.controller.ts
-│ │ ├── products.module.ts
-│ │ ├── products.service.spec.ts
-│ │ └── products.service.ts
-│ ├── user # Módulo de usuarios
-│ │ ├── dto
-│ │ │ ├── create-user.dto.ts
-│ │ │ └── update-user.dto.ts
-│ │ ├── entities
-│ │ │ └── user.entity.ts
-│ │ ├── user.controller.spec.ts
-│ │ ├── user.controller.ts
-│ │ ├── user.module.ts
-│ │ ├── user.service.spec.ts
-│ │ └── user.service.ts
-│ ├── common # Funciones y filtros comunes
-│ │ └── filters
-│ │ └── http-exception.filter.ts
-│ ├── app.module.ts # Módulo principal de la aplicación
-│ └── main.ts # Punto de entrada de la aplicación
-└── package.json # Dependencias y scripts del proyecto
+- **Autenticación JWT** con Passport y NestJS.
+- **Gestión de caché** con Redis y Cache Manager.
+- **ORM** con Prisma para gestionar la base de datos.
+- **Subida y gestión de imágenes** con Cloudinary.
+- **Logging** eficiente con Winston y Morgan.
+- **Testeo** con Jest y Supertest.
+- Manejo de usuarios, productos y otros recursos de manera eficiente.
 
-## Dependencias Principales
+## 📋 Requisitos Previos
 
-El proyecto utiliza las siguientes dependencias:
+Asegúrate de tener instalados los siguientes requisitos antes de comenzar:
 
-- `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`: Dependencias fundamentales de NestJS.
-- `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`: Para la implementación de autenticación basada en JWT.
-- `@nestjs/swagger`: Para la documentación de la API.
-- `@prisma/client`, `prisma`: ORM para la gestión de la base de datos.
-- `bcrypt`: Para la encriptación de contraseñas.
-- `class-validator`, `class-transformer`: Para la validación y transformación de datos.
-- `winston`, `nest-winston`: Para el manejo y configuración de logs.
-- `morgan`: Middleware de logging para solicitudes HTTP.
-- `jsonwebtoken`: Para la creación y verificación de JWT.
+- **Node.js** (versión 14 o superior)
+- **npm** o **pnpm** como gestor de paquetes
+- **Redis** (para almacenamiento en caché)
+- **PostgreSQL** o cualquier otra base de datos compatible con Prisma
 
-## Scripts Disponibles
+## 🚀 Instalación
 
-En el archivo `package.json`, se encuentran definidos los siguientes scripts:
+1. Clona este repositorio:
 
-- `build`: Compila el proyecto usando NestJS.
-- `format`: Aplica Prettier para formatear el código.
-- `start`: Inicia la aplicación en modo de producción.
-- `start:dev`: Inicia la aplicación en modo de desarrollo con monitoreo de cambios.
-- `start:debug`: Inicia la aplicación en modo de depuración.
-- `lint`: Ejecuta ESLint para comprobar y corregir errores de estilo.
-- `test`, `test:watch`, `test:cov`, `test:debug`, `test:e2e`: Scripts relacionados con la ejecución de pruebas usando Jest.
+   ```bash
+   git clone
+   ```
 
-## Configuración Inicial
+2. Dirígete al directorio del proyecto:
 
-Para iniciar el proyecto, sigue los siguientes pasos:
+   ```bash
+   cd backend
+   ```
 
-1. **Instalar Dependencias**: Ejecuta el comando `npm install` para instalar todas las dependencias necesarias.
-2. **Configurar Variables de Entorno**: Crea un archivo `.env` en la raíz del proyecto con las variables necesarias, como `JWT_SECRET`, configuración de base de datos, etc.
-3. **Iniciar Prisma**: Ejecuta `npx prisma migrate dev` para aplicar las migraciones de Prisma.
-4. **Iniciar la Aplicación**: Usa `npm run start:dev` para iniciar la aplicación en modo de desarrollo.
+3. Instala las dependencias:
 
-## Autenticación
+   ```bash
+   npm install
+   # o
+   pnpm install
+   ```
 
-La autenticación en esta aplicación se maneja utilizando JWT (JSON Web Token). Asegúrate de definir una clave secreta en tu archivo `.env` para que la autenticación funcione correctamente:
+4. Configura la base de datos y Redis en el archivo `.env`.
 
-```plaintext
-JWT_SECRET=tu_clave_secreta_aqui
+   Ejemplo de configuración `.env`:
+
+   ```
+   DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+   REDIS_URL=redis://localhost:6379
+   JWT_SECRET=your_jwt_secret
+   CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+   ```
+
+5. Genera el esquema de Prisma:
+
+   ```bash
+   npx prisma generate
+   ```
+
+6. Realiza las migraciones de la base de datos:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+## 💻 Ejecución del Proyecto
+
+Para iniciar el servidor en modo desarrollo, utiliza el siguiente comando:
+
+```bash
+npm run start:dev
 ```
+
+El servidor estará disponible en [http://localhost:3000](http://localhost:3000).
+
+### Comandos adicionales:
+
+- **Compilar el proyecto**:
+
+  ```bash
+  npm run build
+  ```
+
+- **Ejecutar en producción**:
+
+  ```bash
+  npm run start:prod
+  ```
+
+- **Ejecutar los tests**:
+
+  ```bash
+  npm run test
+  ```
+
+- **Ver la cobertura de tests**:
+
+  ```bash
+  npm run test:cov
+  ```
+
+## 📚 Estructura del Proyecto
+
+```
+├── src/
+│   ├── auth/               # Módulo de autenticación
+│   ├── cloudinary/         # Integración con Cloudinary
+│   ├── common/             # Módulos y utilidades comunes
+│   ├── config/             # Configuraciones del proyecto
+│   ├── products/           # Módulo de productos
+│   ├── entrepreneurs/      # Módulo de emprendedores
+│   └── app.module.ts       # Módulo raíz de la aplicación
+├── prisma/                 # Archivos de configuración de Prisma
+├── http-requests/          # Archivos relacionados a peticiones HTTP
+├── package.json            # Dependencias y scripts del proyecto
+├── tsconfig.json           # Configuración de TypeScript
+└── README.md               # Este archivo
+```
+
+## 🛠️ Tecnologías Utilizadas
+
+- **NestJS**: Framework para el desarrollo del lado del servidor con Node.js.
+- **TypeScript**: Superconjunto de JavaScript que añade tipos estáticos.
+- **Prisma**: ORM para la gestión de base de datos.
+- **Redis**: Almacenamiento en caché.
+- **JWT**: Autenticación segura con JSON Web Tokens.
+- **Passport.js**: Middleware de autenticación.
+- **Cloudinary**: Gestión de imágenes.
+- **Winston**: Librería para logging.
+- **Jest**: Framework de testing.
+- **Supertest**: Testing de endpoints HTTP.
+
+## 🤝 Contribuciones
+
+Si deseas contribuir a este proyecto, puedes hacer un fork del repositorio, crear una rama con tu funcionalidad y luego enviar un Pull Request.
+
+---
+
+¡Gracias por revisar este proyecto! Si tienes alguna duda o sugerencia, no dudes en abrir un issue.
