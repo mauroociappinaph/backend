@@ -250,6 +250,7 @@ export class EntrepreneursService {
         email: true,
         password: true,
         firstName: true,
+        avatar: true,
         lastName: true,
       },
     });

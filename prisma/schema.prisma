@@ -37,6 +37,7 @@ model Entrepreneurs {
   lastProductCreated  Int?
   lastProductUpdated  Int?
   lastProductDelete   Int?
+  avatar              String?
 }
 
 model Product {

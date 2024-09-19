@@ -1,33 +1,47 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EntrepreneursService } from '../entrepreneurs/entrepreneurs.service';  // Importa el servicio de emprendedores
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly jwtService: JwtService) { }
+    constructor(
+        private readonly jwtService: JwtService,
+        private readonly entrepreneursService: EntrepreneursService  // Inyecta el servicio de emprendedores
+    ) { }
 
-    async validateUser(username: string, pass: string): Promise<any> {
+    // Valida al usuario buscando en la base de datos real
+    async validateUser(email: string, pass: string): Promise<any> {
         try {
-            const user = { username, password: 'dummyPassword' }; // Simulación, reemplaza con base de datos real
-            if (user && user.password === pass) {
-                const { password, ...result } = user;
-                return result;
+            // Busca al emprendedor en la base de datos usando su email
+            const entrepreneur = await this.entrepreneursService.findByEmail(email);
+            if (entrepreneur && entrepreneur.password === pass) {
+                const { password, ...result } = entrepreneur;
+                return result;  // Retorna el emprendedor sin la contraseña
             }
-            return null;
+            return null;  // Si la contraseña no coincide, retorna null
         } catch (error) {
             throw new HttpException('Error validando el usuario', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async login(user: any) {
-        const payload = { username: user.username, sub: user.userId };
+    // Login: Genera el token JWT y retorna la información del emprendedor
+    async login(entrepreneur: any) {
+        const payload = { email: entrepreneur.email, sub: entrepreneur.id };  // Datos para el token
         return {
-            access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign(payload),  // Firma el token JWT
+            entrepreneur: {
+                id: entrepreneur.id,
+                email: entrepreneur.email,
+                firstName: entrepreneur.firstName,
+                lastName: entrepreneur.lastName,
+                avatar: entrepreneur.avatar,  // Incluye el avatar en la respuesta
+                businessName: entrepreneur.businessName,
+            },
         };
     }
 
-    // Método para manejar el cierre de sesión
+    // Método para manejar el cierre de sesión (si es necesario)
     async logout() {
-        // Si estás manejando una lista de revocación o un sistema de sesiones, podrías hacer más lógica aquí
         return { message: 'Logout successful' };
     }
 }
