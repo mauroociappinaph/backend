@@ -50,7 +50,6 @@ Asegúrate de tener instalados los siguientes requisitos antes de comenzar:
    Ejemplo de configuración `.env`:
 
    ```
-   DATABASE_URL=postgresql://user:password@localhost:5432/mydb
    REDIS_URL=redis://localhost:6379
    JWT_SECRET=your_jwt_secret
    CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
@@ -134,11 +133,3 @@ El servidor estará disponible en [http://localhost:3000](http://localhost:3000)
 - **Winston**: Librería para logging.
 - **Jest**: Framework de testing.
 - **Supertest**: Testing de endpoints HTTP.
-
-## 🤝 Contribuciones
-
-Si deseas contribuir a este proyecto, puedes hacer un fork del repositorio, crear una rama con tu funcionalidad y luego enviar un Pull Request.
-
----
-
-¡Gracias por revisar este proyecto! Si tienes alguna duda o sugerencia, no dudes en abrir un issue.
