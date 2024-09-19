@@ -1,85 +1,135 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📖 Descripción
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este proyecto es un backend desarrollado con **NestJS** y **TypeScript** que incluye funcionalidades de autenticación, manejo de caché, gestión de usuarios y productos, integración con **Cloudinary** para la subida de imágenes y uso de **Prisma** para interactuar con la base de datos. Además, utiliza **Redis** para el almacenamiento en caché y **JWT** para la autenticación segura.
 
-## Description
+## ✨ Características Principales
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Autenticación JWT** con Passport y NestJS.
+- **Gestión de caché** con Redis y Cache Manager.
+- **ORM** con Prisma para gestionar la base de datos.
+- **Subida y gestión de imágenes** con Cloudinary.
+- **Logging** eficiente con Winston y Morgan.
+- **Testeo** con Jest y Supertest.
+- Manejo de usuarios, productos y otros recursos de manera eficiente.
 
-## Project setup
+## 📋 Requisitos Previos
+
+Asegúrate de tener instalados los siguientes requisitos antes de comenzar:
+
+- **Node.js** (versión 14 o superior)
+- **npm** o **pnpm** como gestor de paquetes
+- **Redis** (para almacenamiento en caché)
+- **PostgreSQL** o cualquier otra base de datos compatible con Prisma
+
+## 🚀 Instalación
+
+1. Clona este repositorio:
+
+   ```bash
+   git clone
+   ```
+
+2. Dirígete al directorio del proyecto:
+
+   ```bash
+   cd backend
+   ```
+
+3. Instala las dependencias:
+
+   ```bash
+   npm install
+   # o
+   pnpm install
+   ```
+
+4. Configura la base de datos y Redis en el archivo `.env`.
+
+   Ejemplo de configuración `.env`:
+
+   ```
+   REDIS_URL=redis://localhost:6379
+   JWT_SECRET=your_jwt_secret
+   CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+   ```
+
+5. Genera el esquema de Prisma:
+
+   ```bash
+   npx prisma generate
+   ```
+
+6. Realiza las migraciones de la base de datos:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+## 💻 Ejecución del Proyecto
+
+Para iniciar el servidor en modo desarrollo, utiliza el siguiente comando:
 
 ```bash
-$ npm install
+npm run start:dev
 ```
 
-## Compile and run the project
+El servidor estará disponible en [http://localhost:3000](http://localhost:3000).
 
-```bash
-# development
-$ npm run start
+### Comandos adicionales:
 
-# watch mode
-$ npm run start:dev
+- **Compilar el proyecto**:
 
-# production mode
-$ npm run start:prod
+  ```bash
+  npm run build
+  ```
+
+- **Ejecutar en producción**:
+
+  ```bash
+  npm run start:prod
+  ```
+
+- **Ejecutar los tests**:
+
+  ```bash
+  npm run test
+  ```
+
+- **Ver la cobertura de tests**:
+
+  ```bash
+  npm run test:cov
+  ```
+
+## 📚 Estructura del Proyecto
+
+```
+├── src/
+│   ├── auth/               # Módulo de autenticación
+│   ├── cloudinary/         # Integración con Cloudinary
+│   ├── common/             # Módulos y utilidades comunes
+│   ├── config/             # Configuraciones del proyecto
+│   ├── products/           # Módulo de productos
+│   ├── entrepreneurs/      # Módulo de emprendedores
+│   └── app.module.ts       # Módulo raíz de la aplicación
+├── prisma/                 # Archivos de configuración de Prisma
+├── http-requests/          # Archivos relacionados a peticiones HTTP
+├── package.json            # Dependencias y scripts del proyecto
+├── tsconfig.json           # Configuración de TypeScript
+└── README.md               # Este archivo
 ```
 
-## Run tests
+## 🛠️ Tecnologías Utilizadas
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **NestJS**: Framework para el desarrollo del lado del servidor con Node.js.
+- **TypeScript**: Superconjunto de JavaScript que añade tipos estáticos.
+- **Prisma**: ORM para la gestión de base de datos.
+- **Redis**: Almacenamiento en caché.
+- **JWT**: Autenticación segura con JSON Web Tokens.
+- **Passport.js**: Middleware de autenticación.
+- **Cloudinary**: Gestión de imágenes.
+- **Winston**: Librería para logging.
+- **Jest**: Framework de testing.
+- **Supertest**: Testing de endpoints HTTP.

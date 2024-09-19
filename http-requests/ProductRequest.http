@@ -1,9 +1,12 @@
-### Obtener todos los productos
+POST http://localhost:3000/cloudinary/upload/:entrepreneurId/:productId### Obtener todos los productos
+
+
+### Obtener un producto específico por ID
 GET http://localhost:4000/api/products
 Content-Type: application/json
 
 ### Obtener un producto específico por ID
-GET http://localhost:4000/api/products/1
+GET http://localhost:4000/api/products/21
 Content-Type: application/json
 
 ### Crear un nuevo producto
@@ -11,21 +14,38 @@ POST http://localhost:4000/api/products
 Content-Type: application/json
 
 {
-    "name": "Nuevo Producto 2",
-    "description": "Descripción del producto",
-    "price": 29
+  "name": "mdskmllajdskkkkxzXkkkmaks",
+  "description": "Descripciónxz del producto",
+  "price": 90,
+  "image": "https://media.istockphoto.com/id/513133900/es/foto/oro-retriever-sentado-en-frente-de-un-fondo-blanco.jpg?s=612x612&w=0&k=20&c=0lRWImB8Y4p6X6YGt06c6q8I3AqBgKD-OGQxjLCI5EY=",
+  "entrepreneurId": 21 
 }
 
 ### Actualizar un producto existente
-PUT http://localhost:4000/api/products/1
+POST http://localhost:4000/api/products
+Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-    "name": "Producto Actualizado",
+  "name": "Nuevo producto",
+  "description": "Descripción del producto",
+  "price": 90,
+  "image": "https://example.com/image.jpg",
+  "entrepreneurId": 21
+}
+
+### Actualizar un producto existente
+PATCH  http://localhost:4000/api/products/26
+Content-Type: application/json
+
+{
+    "name": "Producto Actusssdssssssssssssskkkkkkkkskkkssalizado",
     "description": "Nueva descripción",
     "price": 39.99
 }
 
 ### Eliminar un producto
-DELETE http://localhost:4000/api/products/1
+DELETE http://localhost:4000/api/products/26
 Content-Type: application/json
+
+

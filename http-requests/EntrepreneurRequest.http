@@ -1,0 +1,88 @@
+### Obtener todos los emprendedores
+GET http://localhost:4000/api/entrepreneurs
+Content-Type: application/json
+
+### Obtener un emprendedor específico por ID
+GET http://localhost:4000/api/entrepreneurs/19
+
+Content-Type: application/json
+
+### Obtener un emprendedor específico por email
+GET http://localhost:4000/api/entrepreneurs/email/john.doe@example.com
+Content-Type: application/json
+
+### Crear un nuevo emprendedor
+POST http://localhost:4000/api/entrepreneurs
+Content-Type: application/json
+
+{
+  "email": "emfsprendsssedjjokr@c",
+  "password": "password123",
+  "firstName": "Jusddan",
+  "lastName": "Pésdsrez",
+  "businessName": "Mi Emprsesa",
+  "products": [
+    {
+      "name": "Producddtso 1",
+      "description": "Descripción del producto 1",
+      "price": 19.99,
+      "image": "http://url-a-la-imagen.com/imagen1.jpg"
+    },
+    {
+      "name": "Produddcto 2",
+      "description": "Descripción del producto 2",
+      "price": 29.99,
+      "image": "http://url-a-la-imagen.com/imagen2.jpg"
+    }
+  ]
+}
+
+### Registrar un nuevo emprendedor (Sign Up)
+POST http://localhost:4000/api/entrepreneurs/signup
+Content-Type: application/json
+
+{
+  "email": "n@n.com",
+  "password": "123456",
+  "firstName": "Carlos",
+  "lastName": "López",
+  "businessName": "Innovación Tech"
+}
+
+### Iniciar sesión (Log In)
+POST http://localhost:4000/api/entrepreneurs/login
+Content-Type: application/json
+
+{
+  "email": "zzs@zz.com",
+  "password": "123456"
+}
+
+### Cerrar sesion
+POST http://localhost:4000/api/entrepreneurs/logout
+Content-Type: application/json
+
+
+### Actualizar un emprendedor existente
+PATCH http://localhost:4000/api/entrepreneurs/4
+Content-Type: application/json
+
+{
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jassssne.doe@example.com",
+    "businessName": "Jane's Business",
+    "products": [
+        {
+            "id": 20,
+            "name": "Updadsted Product 20",
+            "description": "Updated description for product 1",
+            "price": 150
+        }
+    ]
+}
+
+### Eliminar un emprendedor
+DELETE http://localhost:4000/api/entrepreneurs/2
+Content-Type: application/json
+
